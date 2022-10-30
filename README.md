@@ -8,7 +8,8 @@ This is a tutorial on how to set up a basic **React App** on an **AWS EC2** node
 - HTTP/HTTPS Protocols
 -  VMs
 - Cloud based Architechure
-- React/Node.js/npm
+- React/Node.js/npm 
+<!-- Break from the List -->
 This tutorial is an excellent guide to walk you through all those concepts in a pratical situation.
 ## Creating and AWS Account and the Cost
 First thing's first, you'll need an aws account and yes, you will need to set up the billing section.  This whole process won't cost you more than $20, most of which will go to registering for dns, either way aws will ask you for a credit ccard which you will need to supply 
