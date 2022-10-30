@@ -15,6 +15,18 @@ First thing's first, you'll need an aws account and yes, you will need to set up
   *ssh -i "*something*.pem" ubuntu@*aws dns/public ip**
   In the *SSH client* under *Connect to instance* they directly give you the commands you need to use.
 ## Installing React and Node.js
+  Now we have an server created with all the proper access and network configs it's time to install React and Node.js.  Node.js is tempermental in aws vms so you can't install it the typical way, you need to install the Node.js binary directly.  This git repo has directions for how to install the bianary code for serveral linux os https://github.com/nodesource/distributions, the one we are interested in is Node.js v16.x for Ubuntu, as at this time it has good support.  Run these 2 commands from the README.md 
+  - curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&\
+  - sudo apt-get install -y nodejs
+  After that you need to install npm (Node.js package manager) with:
+  - npm install
+  And it doesn't hurt to run an apt-update and apt-upgrade after for good measure:
+  - sudo apt-get update && apt-get upgrade -y
+  Node run an init:
+  - npm init
+  And create your first react app with:
+  - npx create-react-app *app name*
+  Cd into the new app folder you've just created and you should be able to see you react app running.  You can see it running on the front end as well if you take the public ip from your EC2 node (you can find it when you look at the instance's summary dashboard) and put it in your browser.  It should look like this *picture*
 ## Creating a DNS
 ## Creating an SSL Certificate
 ## Creating a load balancer
