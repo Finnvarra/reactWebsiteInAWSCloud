@@ -46,3 +46,26 @@ First thing's first, you'll need an aws account and yes, you will need to set up
   At this point we have a lovely node balancer with partial ties to our EC2 node but to complete the config we need to reconfigure our *A record* in our *Hosted Zone*.  A load balancer removes your website's dependance on an IP address and moves it to the load balance and our hosted zone needs to reflect that.  To reconfigure the *A record* go into our hosted zone and select the *A record* and edit it.  There should be a radio button that says *Alias* under *Record type*, slide it to the on position.  In the *Route traffic to* section look for the *Application Load Balancer* option, select it, *Application Zone* of your EC2 instance and name of your load balancer and then save.  While you wait for that to propogate go back to your load balancer so we can reconfigure HTTP to redirect to HTTPS.  Select your load balancer and go to the listeners section.  Select your HTTP listener and go to edit it.  Remove the *Forward to* section and when the *Default actions* section prompts you to *Add action* instead of selecting *Forward* click *Redirect*.   In your Redirect the *Protocol* should HTTPS and the *Port* should be 443, click *Save changes*.  
   To test that your load balancer and redirect configurations have be set correctly.  Simply type your website name into the browser (with HTTP if you wish) and your website should appear under HTTPS with locked icon that says your connection is secure *picture*.
 ## Keeping your React Server running as a Service
+  Now you have your website up, but the question now is how to keep it running once the terminal closes.  To keep a process running without user interaction, the process needs to be backrounded, and to keep it running even with the prospect of the process crashing as web servers tend to do, we need to turn it into a service.  There are several softwares to do so but we are going to use *systemd*.  To create a service in systemd we need to create a service file like this:
+  - sudo vim /lib/systemd/system/*websitename*.service
+  The contents of which should like this, simply switch out the path of your web server:
+  - *[Unit]
+After=network.target
+ 
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/myapp
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+ 
+[Install]
+WantedBy=multi-user.target*
+  Now you need reload *systemd*:
+  - systemctl daemon-reload
+  And start and enable our new service:
+  - systemctl start *websitename*
+  - systemctl enable *websitename*
+  You can check the service is running in systemd by looking at it's status:
+  - systemctl status *websitename*
+  Confirm it's working checking on your website in the browser
