@@ -102,10 +102,13 @@ Select that option and from there you're going to want to request a **public cer
   To test that your load balancer and redirect configurations have be set correctly.  Simply type your website name into the browser (with HTTP if you wish) and your website should appear under HTTPS with locked icon that says your connection is secure.
 ![alt text](https://github.com/fjameson/reactWebsiteInAWSCloud/blob/main/server_with_ssl.png?raw=true)
 ## Keeping your React Server running as a Service
-  Now you have your website up, but the question now is how to keep it running once the terminal closes.  To keep a process running without user interaction, the process needs to be backrounded, and to keep it running even with the prospect of the process crashing as web servers tend to do, we need to turn it into a service.  There are several softwares to do so but we are going to use *systemd*.  To create a service in systemd we need to create a service file like this:
-  - sudo vim /lib/systemd/system/*websitename*.service
+  Now you have your website up, but the question now is how to keep it running once the terminal closes.  To keep a process running without user interaction, the process needs to be **backrounded**, and to keep it running even with the prospect of the process crashing as web servers tend to do, we need to turn it into a **service**.  There are several softwares to do so but we are going to use **systemd**.  To create a service in systemd we need to create a **service file** like this:
+  ```
+  sudo vim /lib/systemd/system/<websitename>.service
+  ```
   The contents of which should like this, simply switch out the path of your web server:
-  - *[Unit]
+```
+[Unit]
 After=network.target
  
 [Service]
@@ -116,12 +119,19 @@ ExecStart=/usr/bin/npm start
 Restart=on-failure
  
 [Install]
-WantedBy=multi-user.target*
-  Now you need reload *systemd*:
-  - systemctl daemon-reload
+WantedBy=multi-user.target
+```
+  Now you need reload **systemd**:
+```
+  systemctl daemon-reload
+```
   And start and enable our new service:
-  - systemctl start *websitename*
-  - systemctl enable *websitename*
+  ```
+  systemctl start <websitename>
+  systemctl enable <websitename>
+  ```
   You can check the service is running in systemd by looking at it's status:
-  - systemctl status *websitename*
+  ```
+  systemctl status <websitename>
+  ```
   Confirm it's working checking on your website in the browser
