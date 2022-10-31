@@ -36,37 +36,35 @@ First thing's first, you'll need an **AWS Account** and yes, you will need to se
   In the **SSH client** under **Connect to instance** they directly give you the commands you need to use as well.
 ## Installing React and Node.js
   Now you have an server created with all the proper access and network configs it's time to install **React** and **Node.js**.  Node.js is tempermental in AWS VMs so you can't install it the typical way, you need to install the **Node.js binary** directly.  This git repo has directions for how to install the bianary code for serveral linux OS https://github.com/nodesource/distributions, the one you are interested in is **Node.js v16.x** for **Ubuntu**, as at this time it has good support.  Run these 2 commands from their README.md:
-</br>
   ```
   curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&\
   sudo apt-get install -y nodejs
   ```
-</br>
   After that you need to install ```npm``` (Node.js package manager) with:
-</br>  
-  ```npm install```
-</br>
+  ```
+  npm install
+  ```
   And it doesn't hurt to run an **apt-update** and **apt-upgrade** after for good measure:
-</br>
-  ```sudo apt-get update && apt-get upgrade -y```
-</br>
+  ```
+  sudo apt-get update && apt-get upgrade -y
+  ```
   Run an npm init:
-</br>
-  ```npm init```
-</br>
+  ```
+  npm init
+  ```
   And create your first react app with:
-</br>
-  ```npx create-react-app <appName>```
-</br>
+  ```
+  npx create-react-app <appName>
+  ```
   **Cd** into the new app folder you've just created and you should be able to see you react app running with a start command:
-</br>
-  ***npm start***
-</br>
+  ```
+  npm start
+  ```
   To see it run on the front end we first need to redirect the react code to forward to port **80** instead of **3000**.  This command should do the trick:
-</br>
-  ```sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 3000```
-</br>
- Now if you run **npm start** and take the **public ip** from your EC2 node (you can find it when you look at the **instance's summary** dashboard), put it in your browser you should see your web server's running.
+  ```
+  sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 3000
+  ```
+ Now if you run ```npm start``` and take the **public ip** from your EC2 node (you can find it when you look at the **instance's summary** dashboard), put it in your browser you should see your web server's running.
 ![alt text](https://github.com/fjameson/reactWebsiteInAWSCloud/blob/main/React_server_running.png?raw=true)
 ## Creating a DNS
   Congratulations!!! You have a web server up, now it's time to add DNS to it.  DNS or Domain Name System is basically a way to tie a word name like *www.mywebsite.com* to your server so users can go to it rather than having to remember an ip adress like *54.124.124.4*.  There are several DNS providers out there and almost all of them you have to pay for, at least if you want you website to end in *.com*.  The one we are going to be using is in AWS itself called *Route 53*.  Simply query for it in your AWS search bar.  Once your there look in the side bar menu for *Registered domains*, the next dashboard should have a prompt to register for a domain.  It will ask you to choose a domain name, if the name is already taken Route 53 will run a quick check and inform you.  Once you've landed on a name add it to your cart and pay for it.  After you've purchased your domain name you need to give it time to propogate out, wait 10-15 min, or until your domain moves from *Pending requests* to "Registered domains*.
