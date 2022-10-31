@@ -30,25 +30,43 @@ First thing's first, you'll need an **AWS Account** and yes, you will need to se
   These are common enough and there are checkmarks correlating to each in the config, mark them off.
 ![alt text](https://github.com/fjameson/reactWebsiteInAWSCloud/blob/main/EC2_create_securitygroups.png?raw=true)
   Now you are done, all the other configs can remain at the default settings.  Click **Launch Instance** and watch as your VM gets spun up.  You'll know it's ready after it passes both **status checks**.  You can see the node from the terminal after by selecting the instance and then the **Connect** button and either Connecting directly in AWS with the **Connect** button in **EC2 Instance Connect** or **sshing** from your local terminal with your **.pem** file like this:
-  ```ssh -i "**something**.pem" ubuntu@**public ip**```
+</br>
+  ```ssh -i "<newkeypair>.pem" ubuntu@<publicDNS/publicIP>```
+</br>
   In the **SSH client** under **Connect to instance** they directly give you the commands you need to use as well.
 ## Installing React and Node.js
-  Now we have an server created with all the proper access and network configs it's time to install React and Node.js.  Node.js is tempermental in aws vms so you can't install it the typical way, you need to install the Node.js binary directly.  This git repo has directions for how to install the bianary code for serveral linux os https://github.com/nodesource/distributions, the one we are interested in is Node.js v16.x for Ubuntu, as at this time it has good support.  Run these 2 commands from the README.md 
-  - curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&\
-  - sudo apt-get install -y nodejs
-  After that you need to install npm (Node.js package manager) with:
-  - npm install
-  And it doesn't hurt to run an apt-update and apt-upgrade after for good measure:
-  - sudo apt-get update && apt-get upgrade -y
-  Node run an init:
-  - npm init
+  Now you have an server created with all the proper access and network configs it's time to install **React** and **Node.js**.  Node.js is tempermental in AWS VMs so you can't install it the typical way, you need to install the **Node.js binary** directly.  This git repo has directions for how to install the bianary code for serveral linux OS https://github.com/nodesource/distributions, the one you are interested in is **Node.js v16.x** for **Ubuntu**, as at this time it has good support.  Run these 2 commands from their README.md:
+</br>
+  ```curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&\```
+</br>
+  ```sudo apt-get install -y nodejs```
+</br>
+  After that you need to install ```npm``` (Node.js package manager) with:
+</br>  
+  ```npm install```
+</br>
+  And it doesn't hurt to run an **apt-update** and **apt-upgrade** after for good measure:
+</br>
+  ```sudo apt-get update && apt-get upgrade -y```
+</br>
+  Run an npm init:
+</br>
+  ```npm init```
+</br>
   And create your first react app with:
-  - npx create-react-app *app name*
-  Cd into the new app folder you've just created and you should be able to see you react app running with a start command:
-  - npm start
-  To see it run on the front end we first need to redirect the react code to forward to port 80 instead of 443.  This command should do the trick:
-  - sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 3000
- Now if you run *npm start* and take the public ip from your EC2 node (you can find it when you look at the instance's summary dashboard), put it in your browser you should see your web server's running *picture*
+</br>
+  ```npx create-react-app <appName>```
+</br>
+  **Cd** into the new app folder you've just created and you should be able to see you react app running with a start command:
+</br>
+  ***npm start***
+</br>
+  To see it run on the front end we first need to redirect the react code to forward to port **80** instead of **3000**.  This command should do the trick:
+</br>
+  ```sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 3000```
+</br>
+ Now if you run **npm start** and take the **public ip** from your EC2 node (you can find it when you look at the **instance's summary** dashboard), put it in your browser you should see your web server's running.
+![alt text](https://github.com/fjameson/reactWebsiteInAWSCloud/blob/main/React_server_running?raw=true)
 ## Creating a DNS
   Congratulations!!! You have a web server up, now it's time to add DNS to it.  DNS or Domain Name System is basically a way to tie a word name like *www.mywebsite.com* to your server so users can go to it rather than having to remember an ip adress like *54.124.124.4*.  There are several DNS providers out there and almost all of them you have to pay for, at least if you want you website to end in *.com*.  The one we are going to be using is in AWS itself called *Route 53*.  Simply query for it in your AWS search bar.  Once your there look in the side bar menu for *Registered domains*, the next dashboard should have a prompt to register for a domain.  It will ask you to choose a domain name, if the name is already taken Route 53 will run a quick check and inform you.  Once you've landed on a name add it to your cart and pay for it.  After you've purchased your domain name you need to give it time to propogate out, wait 10-15 min, or until your domain moves from *Pending requests* to "Registered domains*.
   Now you have a registered domain, but you need to tie that back to your EC2 node.  For that we need to go to our *Hosted zones* which are also located in *Route 53*. When you registered your domain it should have autogenerated a hosted czone for you with the same name as your website.  If you open your hosted zone you should see it contains 2 records: a NS and an SOA.  The NS ties you to your DNS and the SOA is required by default on your hosted zone.  In order for us to tie our hosted zone to our EC2 node we need to create an *A record* this ties an IPV4 address to a domain name.  It should be straight forward simply create a record of type A and tie the *public IP* of your EC2 node in as the value.  It should look like this *picture*.  After you've submitted your record you can test to see that dns is working but typing the name in the brower.  If it looks the same as when you type in the public ip directly you are golden *french hand*.
