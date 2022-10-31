@@ -37,8 +37,10 @@ First thing's first, you'll need an **AWS Account** and yes, you will need to se
 ## Installing React and Node.js
   Now you have an server created with all the proper access and network configs it's time to install **React** and **Node.js**.  Node.js is tempermental in AWS VMs so you can't install it the typical way, you need to install the **Node.js binary** directly.  This git repo has directions for how to install the bianary code for serveral linux OS https://github.com/nodesource/distributions, the one you are interested in is **Node.js v16.x** for **Ubuntu**, as at this time it has good support.  Run these 2 commands from their README.md:
 </br>
-  ```curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&\```
-  sudo apt-get install -y nodejs```
+  ```
+  curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&\
+  sudo apt-get install -y nodejs
+  ```
 </br>
   After that you need to install ```npm``` (Node.js package manager) with:
 </br>  
